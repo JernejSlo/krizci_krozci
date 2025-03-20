@@ -6,6 +6,9 @@ import os
 class RobotVisualUtils():
 
     def __init__(self):
+
+        self.margins = [130, 130, 20, 60]
+
         pass
 
     def capture_realsense_image(self,output_path: str):
@@ -164,8 +167,7 @@ class RobotVisualUtils():
 
     def determine_board(self,img):
 
-        margins = [130, 130, 20, 60]
-        cropped_img = utils.crop_image(img, margins)
+        cropped_img = self.crop_image(img, self.margins)
 
         slices = self.slice_image_into_grid(cropped_img)
 
@@ -190,13 +192,16 @@ class RobotVisualUtils():
         else:
             return ""
 
-utils = RobotVisualUtils()
+    def load_board_image(self):
+        return cv2.imread("./sense/color_image.png")  # Load an image
+
+#utils = RobotVisualUtils()
 #utils.capture_realsense_image("./sense/")
 
-image = cv2.imread("./sense/color_image.png")  # Load an image
-margins = [130, 130, 20, 60]  # Crop 50px from left, 30px from right, 20px from top, 40px from bottom
+#image = cv2.imread("./sense/color_image.png")  # Load an image
+#margins = [130, 130, 20, 60]  # Crop 50px from left, 30px from right, 20px from top, 40px from bottom
 
-print(utils.determine_board(image))
+#print(utils.determine_board(image))
 
 """cropped_img = utils.crop_image(image, margins)"""
 
