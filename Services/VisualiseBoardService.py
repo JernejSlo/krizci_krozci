@@ -3,7 +3,7 @@ from random import random
 
 import rospy
 import json
-from std_msgs.msg import String
+from std_srvs.srv import Trigger, TriggerResponse
 
 from RobotVisualUtils import RobotVisualUtils
 
@@ -13,7 +13,7 @@ class VisualizeBoardService(RobotVisualUtils):
         super.__init__()
 
         # Define service
-        rospy.Service('/get_game_board', String, self.get_board_status)
+        rospy.Service('/get_game_board', Trigger, self.get_board_status)
         rospy.loginfo("Game visualisation service started.")
 
         self.ctrl_c = False
@@ -38,9 +38,9 @@ class VisualizeBoardService(RobotVisualUtils):
             self.move_above_board()
             image = self.grab_board_image()
             move = self.determine_board(image)
-            return String(json.dumps({'success': True,'data': move}))
+            return Trigger({'success': True, 'message': json.dumps(move)})
         except Exception as e:
-            return String(json.dumps({'success': False, "error": e}))
+            return Trigger({'success': False, "message": json.dumps({"error": e})})
 
 
 

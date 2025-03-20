@@ -15,14 +15,15 @@ from numpy import linalg as LA
 import time
 
 import json
-from std_msgs.msg import String
+
+from std_srvs.srv import Trigger, TriggerResponse
 
 class MoveRobotService():
 
     def __init__(self):
 
 
-        rospy.Service('/move_robot_to', String, self.move_arm_to)
+        rospy.Service('/move_robot_to', Trigger, self.move_arm_to)
 
         rospy.loginfo("Game visualisation service started.")
 
@@ -68,7 +69,7 @@ class MoveRobotService():
         try:
             data = json.loads(req.data)  # Convert input string to a 2D list
         except json.JSONDecodeError:
-            return String(json.dumps({"success": False, "error": "Invalid JSON"}))
+            return Trigger({"success": False, "message": json.dumps({"error": "Invalid JSON"})})
 
         if "position" in data:
             rospy.loginfo("Position key exists!")
@@ -76,9 +77,9 @@ class MoveRobotService():
             try:
                 self.move_to_position(position)
             except Exception as e:
-                return String(json.dumps({"success": False,"error": e}))
+                return Trigger({"success": False, "message": json.dumps({"error": e})})
 
-            return String(json.dumps({"success": True}))
+            return Trigger({"success": False, "message": "Arm moved successfully"})
         else:
             required_keys = ["x", "y", "z"]
 

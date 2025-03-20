@@ -3,7 +3,7 @@ from random import random
 
 import rospy
 import json
-from std_msgs.msg import String
+from std_srvs.srv import Trigger, TriggerResponse
 
 class GameService():
 
@@ -12,7 +12,7 @@ class GameService():
         self.GRID_SIZE = 3  # Example grid size
 
         # Define service
-        rospy.Service('/get_game_move', String, self.calculate_next_move)
+        rospy.Service('/get_game_move', Trigger, self.calculate_next_move)
         rospy.loginfo("Game service started.")
 
         self.ctrl_c = False
@@ -128,11 +128,11 @@ class GameService():
         try:
             board = json.loads(req.data)  # Convert input string to a 2D list
         except json.JSONDecodeError:
-            return String(json.dumps({"success": False, "error": "Invalid JSON"}))
+            return Trigger({"success": False, "message": json.dumps({"error": "Invalid JSON"})})
 
         move = self.poteza_racunalnika(board)
 
-        return String(json.dumps({'success': True, 'move': move}))
+        return Trigger({"success": True, "message": json.dumps({'move': move})})
 
 
 
